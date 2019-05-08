@@ -21,7 +21,7 @@ namespace UniversityManagement.Web
                 CreateWebHostBuilder(args).Build().Run();
                 return;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return;
             }

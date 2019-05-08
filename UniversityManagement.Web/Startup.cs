@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using UniversityManagement.Repositories.Mappings;
+using UniversityManagement.Services.Mappings;
 
 namespace UniversityManagement.Web
 {
@@ -31,6 +34,12 @@ namespace UniversityManagement.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            // Configure AutoMapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            // Configure DI
+            RepositoryMapping.InitMap(services);
+            ServiceMapping.InitMap(services);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

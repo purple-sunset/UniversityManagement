@@ -7,12 +7,15 @@
 
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.1.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
   </ItemGroup>
 
 
   <ItemGroup>
+    <ProjectReference Include="..\UniversityManagement.Services\UniversityManagement.Services.csproj" />
     <ProjectReference Include="..\UniversityManagement.Utilities\UniversityManagement.Utilities.csproj" />
   </ItemGroup>
 
