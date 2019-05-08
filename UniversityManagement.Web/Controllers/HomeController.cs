@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using UniversityManagement.Utilities;
 using UniversityManagement.Web.Models;
 
 namespace UniversityManagement.Web.Controllers
@@ -17,7 +18,20 @@ namespace UniversityManagement.Web.Controllers
 
         public IActionResult Privacy()
         {
-            return View();
+            try
+            {
+                int a, b;
+                a = 1;
+                b = 0;
+                a = a / b;
+                return View();
+            }
+            catch(Exception ex)
+            {
+                Logger.LogError(ex, "Exception");
+                return View();
+            }
+            
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

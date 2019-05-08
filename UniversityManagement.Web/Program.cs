@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using UniversityManagement.Utilities;
 
 namespace UniversityManagement.Web
 {
@@ -14,7 +15,20 @@ namespace UniversityManagement.Web
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            try
+            {
+                Logger.StartLogger();
+                CreateWebHostBuilder(args).Build().Run();
+                return;
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+            finally
+            {
+                Logger.EndLogger();
+            }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
