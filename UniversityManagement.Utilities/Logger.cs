@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UniversityManagement.Utilities
 {
-    public class Logger
+    public static class Logger
     {
         public static void StartLogger()
         {
