@@ -177,6 +177,7 @@ namespace UniversityManagement.Repositories.Implements
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
+                Attach(entity);
                 entity.UpdatedAt = DateTime.Now;
                 _context.Entry(entity).State = EntityState.Modified;
             }
@@ -199,6 +200,7 @@ namespace UniversityManagement.Repositories.Implements
 
                 foreach (TEntity entity in entities)
                 {
+                    Attach(entity);
                     entity.UpdatedAt = DateTime.Now;
                     _context.Entry(entity).State = EntityState.Modified;
                 }
@@ -243,6 +245,7 @@ namespace UniversityManagement.Repositories.Implements
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
+                Attach(entity);
                 entity.UpdatedAt = DateTime.Now;
                 entity.IsDeleted = true;
                 _context.Entry(entity).State = EntityState.Modified;
@@ -266,10 +269,49 @@ namespace UniversityManagement.Repositories.Implements
 
                 foreach (TEntity entity in entities)
                 {
+                    Attach(entity);
                     entity.UpdatedAt = DateTime.Now;
                     entity.IsDeleted = true;
                     _context.Entry(entity).State = EntityState.Modified;
                 }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Attach entity
+        /// </summary>
+        /// <param name="entity"></param>
+        private void Attach(TEntity entity)
+        {
+            try
+            {
+                if (entity == null)
+                    throw new ArgumentNullException(nameof(entity));
+
+                Entities.Attach(entity);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Attach entities
+        /// </summary>
+        /// <param name="entities"></param>
+        private void Attach(IEnumerable<TEntity> entities)
+        {
+            try
+            {
+                if (entities == null)
+                    throw new ArgumentNullException(nameof(entities));
+
+                Entities.AttachRange(entities);
             }
             catch (Exception)
             {

@@ -1,16 +1,14 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using UniversityManagement.Repositories.Implements;
 using UniversityManagement.Repositories.Poco;
 
 namespace UniversityManagement.Services.Implements
 {
-    public interface IBaseService<TEntity, TViewModel> where TEntity : BaseEntity
+    public interface IBaseService<TEntity, TViewModel> : IEntityBaseService<TEntity> where TEntity : BaseEntity
     {
         IQueryable<TViewModel> GetAll();
         TViewModel GetById(int id);
@@ -24,22 +22,17 @@ namespace UniversityManagement.Services.Implements
         bool Delete(TViewModel viewModel);
         Task<bool> DeleteAsync(TViewModel viewModel);
     }
-    public class BaseService<TEntity, TViewModel> : IBaseService<TEntity, TViewModel> where TEntity : BaseEntity
+    public class BaseService<TEntity, TViewModel> : EntityBaseService<TEntity>, IBaseService<TEntity, TViewModel>  where TEntity : BaseEntity
     {
-        protected BaseService(IUnitOfWork unitOfWork, IBaseRepository<TEntity> repository)
+        public BaseService(IUnitOfWork unitOfWork, IBaseRepository<TEntity> repository) : base(unitOfWork, repository)
         {
-            UnitOfWork = unitOfWork;
-            Repository = repository;
+
         }
-
-        protected IUnitOfWork UnitOfWork { get; }
-        protected IBaseRepository<TEntity> Repository { get; }
-
         public IQueryable<TViewModel> GetAll()
         {
             try
             {
-                return Repository.TableNoTracking.ProjectTo<TViewModel>();
+                return GetAllEntity().ProjectTo<TViewModel>();
             }
             catch (Exception)
             {
@@ -52,7 +45,7 @@ namespace UniversityManagement.Services.Implements
         {
             try
             {
-                var entity = Repository.GetById(id);
+                var entity = GetEntityById(id);
                 return Mapper.Map<TViewModel>(entity);
             }
             catch (Exception)
@@ -66,7 +59,7 @@ namespace UniversityManagement.Services.Implements
         {
             try
             {
-                var entity = await Repository.GetByIdAsync(id);
+                var entity = await GetEntityByIdAsync(id);
                 return Mapper.Map<TViewModel>(entity);
             }
             catch (Exception)
@@ -81,9 +74,7 @@ namespace UniversityManagement.Services.Implements
             try
             {
                 var entity = Mapper.Map<TEntity>(viewModel);
-                Repository.Add(entity);
-                int result = UnitOfWork.Commit();
-                return result > 0;
+                return AddEntity(entity);
             }
             catch (Exception)
             {
@@ -97,9 +88,7 @@ namespace UniversityManagement.Services.Implements
             try
             {
                 var entity = Mapper.Map<TEntity>(viewModel);
-                Repository.Add(entity);
-                int result = await UnitOfWork.CommitAsync();
-                return result > 0;
+                return await AddEntityAsync(entity);
             }
             catch (Exception)
             {
@@ -113,9 +102,7 @@ namespace UniversityManagement.Services.Implements
             try
             {
                 var entity = Mapper.Map<TEntity>(viewModel);
-                Repository.Update(entity);
-                int result = UnitOfWork.Commit();
-                return result > 0;
+                return UpdateEntity(entity);
             }
             catch (Exception)
             {
@@ -129,9 +116,7 @@ namespace UniversityManagement.Services.Implements
             try
             {
                 var entity = Mapper.Map<TEntity>(viewModel);
-                Repository.Update(entity);
-                int result = await UnitOfWork.CommitAsync();
-                return result > 0;
+                return await UpdateEntityAsync(entity);
             }
             catch (Exception)
             {
@@ -144,9 +129,7 @@ namespace UniversityManagement.Services.Implements
         {
             try
             {
-                Repository.Delete(id);
-                int result = UnitOfWork.Commit();
-                return result > 0;
+                return DeleteEntity(id);
             }
             catch (Exception)
             {
@@ -159,9 +142,7 @@ namespace UniversityManagement.Services.Implements
         {
             try
             {
-                Repository.Delete(id);
-                int result = await UnitOfWork.CommitAsync();
-                return result > 0;
+                return await DeleteEntityAsync(id);
             }
             catch (Exception)
             {
@@ -175,9 +156,7 @@ namespace UniversityManagement.Services.Implements
             try
             {
                 var entity = Mapper.Map<TEntity>(viewModel);
-                Repository.Delete(entity);
-                int result = UnitOfWork.Commit();
-                return result > 0;
+                return DeleteEntity(entity);
             }
             catch (Exception)
             {
@@ -191,9 +170,7 @@ namespace UniversityManagement.Services.Implements
             try
             {
                 var entity = Mapper.Map<TEntity>(viewModel);
-                Repository.Delete(entity);
-                int result = await UnitOfWork.CommitAsync();
-                return result > 0;
+                return await DeleteEntityAsync(entity);
             }
             catch (Exception)
             {
