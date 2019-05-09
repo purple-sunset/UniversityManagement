@@ -177,7 +177,7 @@ namespace UniversityManagement.Repositories.Implements
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
-                Attach(entity);
+                //Attach(entity);
                 entity.UpdatedAt = DateTime.Now;
                 _context.Entry(entity).State = EntityState.Modified;
             }
@@ -200,7 +200,7 @@ namespace UniversityManagement.Repositories.Implements
 
                 foreach (TEntity entity in entities)
                 {
-                    Attach(entity);
+                    //Attach(entity);
                     entity.UpdatedAt = DateTime.Now;
                     _context.Entry(entity).State = EntityState.Modified;
                 }
@@ -245,7 +245,7 @@ namespace UniversityManagement.Repositories.Implements
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
-                Attach(entity);
+                //Attach(entity);
                 entity.UpdatedAt = DateTime.Now;
                 entity.IsDeleted = true;
                 _context.Entry(entity).State = EntityState.Modified;
@@ -269,7 +269,7 @@ namespace UniversityManagement.Repositories.Implements
 
                 foreach (TEntity entity in entities)
                 {
-                    Attach(entity);
+                    //Attach(entity);
                     entity.UpdatedAt = DateTime.Now;
                     entity.IsDeleted = true;
                     _context.Entry(entity).State = EntityState.Modified;

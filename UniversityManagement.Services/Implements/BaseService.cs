@@ -3,12 +3,13 @@ using AutoMapper.QueryableExtensions;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using UniversityManagement.Entities.ViewModels;
 using UniversityManagement.Repositories.Implements;
 using UniversityManagement.Repositories.Poco;
 
 namespace UniversityManagement.Services.Implements
 {
-    public interface IBaseService<TEntity, TViewModel> : IEntityBaseService<TEntity> where TEntity : BaseEntity
+    public interface IBaseService<TEntity, TViewModel> : IEntityBaseService<TEntity> where TEntity : BaseEntity where TViewModel : BaseViewModel
     {
         IQueryable<TViewModel> GetAll();
         TViewModel GetById(int id);
@@ -22,7 +23,7 @@ namespace UniversityManagement.Services.Implements
         bool Delete(TViewModel viewModel);
         Task<bool> DeleteAsync(TViewModel viewModel);
     }
-    public class BaseService<TEntity, TViewModel> : EntityBaseService<TEntity>, IBaseService<TEntity, TViewModel>  where TEntity : BaseEntity
+    public class BaseService<TEntity, TViewModel> : EntityBaseService<TEntity>, IBaseService<TEntity, TViewModel>  where TEntity : BaseEntity where TViewModel : BaseViewModel
     {
         public BaseService(IUnitOfWork unitOfWork, IBaseRepository<TEntity> repository) : base(unitOfWork, repository)
         {
@@ -101,7 +102,8 @@ namespace UniversityManagement.Services.Implements
         {
             try
             {
-                var entity = Mapper.Map<TEntity>(viewModel);
+                var entity = GetEntityById(viewModel.Id);
+                Mapper.Map<TViewModel, TEntity>(viewModel, entity);
                 return UpdateEntity(entity);
             }
             catch (Exception)
@@ -115,7 +117,8 @@ namespace UniversityManagement.Services.Implements
         {
             try
             {
-                var entity = Mapper.Map<TEntity>(viewModel);
+                var entity = await GetEntityByIdAsync(viewModel.Id);
+                Mapper.Map<TViewModel, TEntity>(viewModel, entity);
                 return await UpdateEntityAsync(entity);
             }
             catch (Exception)
@@ -155,7 +158,7 @@ namespace UniversityManagement.Services.Implements
         {
             try
             {
-                var entity = Mapper.Map<TEntity>(viewModel);
+                var entity = GetEntityById(viewModel.Id);
                 return DeleteEntity(entity);
             }
             catch (Exception)
@@ -169,7 +172,7 @@ namespace UniversityManagement.Services.Implements
         {
             try
             {
-                var entity = Mapper.Map<TEntity>(viewModel);
+                var entity = await GetEntityByIdAsync(viewModel.Id);
                 return await DeleteEntityAsync(entity);
             }
             catch (Exception)

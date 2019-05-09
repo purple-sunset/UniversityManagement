@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UniversityManagement.Repositories\UniversityManagement.Repositories.csproj" />
+    <ProjectReference Include="..\UniversityManagement.Utilities\UniversityManagement.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

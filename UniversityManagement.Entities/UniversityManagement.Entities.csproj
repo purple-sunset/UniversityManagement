@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Parameters\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
 
 </Project>
