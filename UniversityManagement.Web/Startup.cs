@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -41,6 +42,41 @@ namespace UniversityManagement.Web
             RepositoryMapping.InitMap(services);
             ServiceMapping.InitMap(services);
 
+            
+
+            // Configure identity server
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            services.AddAuthentication(options =>
+                {
+                    // Notice the schema name is case sensitive [ cookies != Cookies ]
+                    options.DefaultScheme = "cookies";
+                    options.DefaultChallengeScheme = "oidc";
+                })
+
+                .AddCookie("cookies", options => options.ForwardDefaultSelector = ctx => ctx.Request.Path.StartsWithSegments("/api") ? "jwt" : "cookies")
+                .AddJwtBearer("jwt", options =>
+                {
+                    options.Authority = "https://localhost:44359";
+                    options.Audience = "api1";
+                    options.RequireHttpsMetadata = false;
+                })
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.SignInScheme = "cookies";
+                    options.Authority = "https://localhost:44359";
+                    options.RequireHttpsMetadata = true;
+                    options.ClientId = "mvc";
+                    options.SaveTokens = true;
+
+                    options.ClientSecret = "secret";
+                    options.ResponseType = "code id_token";
+                    options.GetClaimsFromUserInfoEndpoint = true;
+                    options.Scope.Add("api1");
+                    options.Scope.Add("offline_access");
+
+                    options.ForwardDefaultSelector = ctx => ctx.Request.Path.StartsWithSegments("/api") ? "jwt" : "oidc";
+                });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -59,6 +95,7 @@ namespace UniversityManagement.Web
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 

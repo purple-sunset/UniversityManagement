@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniversityManagement.Utilities;
 using UniversityManagement.Web.Models;
@@ -16,22 +17,15 @@ namespace UniversityManagement.Web.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
-            try
-            {
-                int a, b;
-                a = 1;
-                b = 0;
-                a = a / b;
-                return View();
-            }
-            catch(Exception ex)
-            {
-                Logger.LogError(ex, "Exception");
-                return View();
-            }
-            
+            return View();
+        }
+
+        public IActionResult Logout()
+        {
+            return SignOut("Cookies", "oidc");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
