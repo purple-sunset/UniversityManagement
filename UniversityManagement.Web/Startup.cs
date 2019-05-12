@@ -58,7 +58,7 @@ namespace UniversityManagement.Web
                 {
                     options.Authority = "https://localhost:44359";
                     options.Audience = "api1";
-                    options.RequireHttpsMetadata = false;
+                    options.RequireHttpsMetadata = true;
                 })
                 .AddOpenIdConnect("oidc", options =>
                 {

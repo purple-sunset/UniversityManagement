@@ -86,7 +86,8 @@ namespace UniversityManagement.Authentication
                         IdentityServerConstants.StandardScopes.Profile,
                         "api1"
                     },
-                    AllowOfflineAccess = true
+                    AllowOfflineAccess = true,
+                    RequireConsent = false
                 }
             };
         }
