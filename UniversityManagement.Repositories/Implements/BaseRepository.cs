@@ -66,6 +66,12 @@ namespace UniversityManagement.Repositories.Implements
         void Delete(int id);
 
         /// <summary>
+        ///     Delete entities
+        /// </summary>
+        /// <param name="ids"></param>
+        void Delete(IEnumerable<int> ids);
+
+        /// <summary>
         ///     Delete entity
         /// </summary>
         /// <param name="entity">Entity</param>
@@ -76,6 +82,30 @@ namespace UniversityManagement.Repositories.Implements
         /// </summary>
         /// <param name="entities">Entities</param>
         void Delete(IEnumerable<TEntity> entities);
+
+        /// <summary>
+        ///     Delete entity
+        /// </summary>
+        /// <param name="id"></param>
+        void HardDelete(int id);
+
+        /// <summary>
+        ///     Delete entities
+        /// </summary>
+        /// <param name="ids"></param>
+        void HardDelete(IEnumerable<int> ids);
+
+        /// <summary>
+        ///     Delete entity
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        void HardDelete(TEntity entity);
+
+        /// <summary>
+        ///     Delete entities
+        /// </summary>
+        /// <param name="entities">Entities</param>
+        void HardDelete(IEnumerable<TEntity> entities);
     }
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
     {
@@ -219,13 +249,39 @@ namespace UniversityManagement.Repositories.Implements
         {
             try
             {
-                TEntity entity = GetById(id);
-                if (entity == null)
+                if (id == null || id <= 0)
                     throw new ArgumentNullException(nameof(id));
 
+                TEntity entity = GetById(id);
                 entity.UpdatedAt = DateTime.Now;
                 entity.IsDeleted = true;
                 _context.Entry(entity).State = EntityState.Modified;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        ///     Delete entity
+        /// </summary>
+        /// <param name="ids"></param>
+        public void Delete(IEnumerable<int> ids)
+        {
+            try
+            {
+                if (ids == null)
+                    throw new ArgumentNullException(nameof(ids));
+
+                IQueryable<TEntity> entities = Table.Where(e => ids.Contains(e.Id));
+                foreach (TEntity entity in entities)
+                {
+                    //Attach(entity);
+                    entity.UpdatedAt = DateTime.Now;
+                    entity.IsDeleted = true;
+                    _context.Entry(entity).State = EntityState.Modified;
+                }
             }
             catch (Exception)
             {
@@ -273,6 +329,91 @@ namespace UniversityManagement.Repositories.Implements
                     entity.UpdatedAt = DateTime.Now;
                     entity.IsDeleted = true;
                     _context.Entry(entity).State = EntityState.Modified;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        ///     Delete entity completly
+        /// </summary>
+        /// <param name="id"></param>
+        public void HardDelete(int id)
+        {
+            try
+            {
+                if (id == null || id<=0)
+                    throw new ArgumentNullException(nameof(id));
+
+                TEntity entity = GetById(id);
+                _context.Entry(entity).State = EntityState.Deleted;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        ///     Delete entity completly
+        /// </summary>
+        /// <param name="ids"></param>
+        public void HardDelete(IEnumerable<int> ids)
+        {
+            try
+            {
+                if (ids == null)
+                    throw new ArgumentNullException(nameof(ids));
+
+                IQueryable<TEntity> entities = Table.Where(e=>ids.Contains(e.Id));
+
+                foreach (TEntity entity in entities)
+                {
+                    _context.Entry(entity).State = EntityState.Deleted;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        ///     Delete entity completly
+        /// </summary>
+        /// <param name="entity"></param>
+        public void HardDelete(TEntity entity)
+        {
+            try
+            {
+                if (entity == null)
+                    throw new ArgumentNullException(nameof(entity));
+
+                _context.Entry(entity).State = EntityState.Deleted;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        ///     Delete entity completly
+        /// </summary>
+        /// <param name="entities"></param>
+        public void HardDelete(IEnumerable<TEntity> entities)
+        {
+            try
+            {
+                if (entities == null)
+                    throw new ArgumentNullException(nameof(entities));
+
+                foreach (TEntity entity in entities)
+                {
+                    _context.Entry(entity).State = EntityState.Deleted;
                 }
             }
             catch (Exception)
