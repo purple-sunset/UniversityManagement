@@ -18,6 +18,7 @@ namespace UniversityManagement.Repositories.Poco
 
         [Required]
         [MaxLength(50)]
+        [ConcurrencyCheck]
         public string UserName { get; set; }
 
         [Required]
