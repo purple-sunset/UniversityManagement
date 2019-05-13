@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UniversityManagement.Services.Implements;
 
 namespace UniversityManagement.Services.Mappings
 {
@@ -9,7 +10,9 @@ namespace UniversityManagement.Services.Mappings
     {
         public static void InitMap(IServiceCollection services)
         {
-
+            services.AddSingleton(typeof(IEntityBaseService<>), typeof(EntityBaseService<>));
+            services.AddSingleton(typeof(IBaseService<,>), typeof(BaseService<,>));
+            services.AddSingleton<IAccessTokenService, AccessTokenService>();
         }
     }
 }

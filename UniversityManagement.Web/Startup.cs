@@ -42,8 +42,6 @@ namespace UniversityManagement.Web
             RepositoryMapping.InitMap(services);
             ServiceMapping.InitMap(services);
 
-            
-
             // Configure identity server
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAuthentication(options =>

@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using IdentityServer4;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
+using System;
+using UniversityManagement.Authentication.Mappings;
+using UniversityManagement.Authentication.Models;
+using UniversityManagement.Authentication.Stores;
+using UniversityManagement.Repositories.Mappings;
+using UniversityManagement.Services.Mappings;
 
 namespace UniversityManagement.Authentication
 {
@@ -20,13 +20,9 @@ namespace UniversityManagement.Authentication
 
         public IHostingEnvironment Environment { get; }
 
-        public Startup(IHostingEnvironment environment)
+        public Startup(IHostingEnvironment environment, IConfiguration configuration)
         {
             Environment = environment;
-        }
-
-        public Startup(IConfiguration configuration)
-        {
             Configuration = configuration;
         }
 
@@ -42,12 +38,21 @@ namespace UniversityManagement.Authentication
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            // Configure AutoMapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            // Configure DI
+            RepositoryMapping.InitMap(services);
+            ServiceMapping.InitMap(services);
+            IdentityStoreMapping.InitMap(services);
+
             // Configure identity server
             var builder = services.AddIdentityServer()
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetApis())
-                .AddInMemoryClients(Config.GetClients())
-                .AddTestUsers(Config.GetUsers());
+                .AddInMemoryIdentityResources(Configuration.GetSection("IdentityServer:Resources"))
+                .AddInMemoryApiResources(Configuration.GetSection("IdentityServer:Apis"))
+                .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"))
+                .AddTestUsers(TestUsers.Users)
+                .AddPersistedGrantStore<PersistedGrantStore>();
 
             if (Environment.IsDevelopment())
             {
