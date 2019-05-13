@@ -3,13 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UniversityManagement.Repositories.Poco;
+using UniversityManagement.Utilities;
 
 namespace UniversityManagement.Repositories.Contexts
 {
     public class WebContext:DbContext
     {
-        public WebContext(DbContextOptions<WebContext> options): base(options)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.UseSqlServer(Configuration.ConnectionString);
         }
 
         public DbSet<User> Users { get; set; }

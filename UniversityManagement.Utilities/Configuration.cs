@@ -14,6 +14,7 @@ namespace UniversityManagement.Utilities
 
         private static IConfigurationRoot configuration = builder.Build();
 
+        public static string ConnectionString { get => configuration.GetConnectionString("WebContext"); }
         public static IConfigurationSection MailSender { get => configuration.GetSection("MailSender"); }
 
         public static string MailServer { get => MailSender["MailServer"]; }
