@@ -44,7 +44,7 @@ namespace UniversityManagement.Services.Implements
         Task<bool> HardDeleteEntityByAsync(Func<TEntity, bool> preCondition = null);
 
     }
-    public abstract class EntityBaseService<TEntity> : IEntityBaseService<TEntity> where TEntity : BaseEntity
+    public class EntityBaseService<TEntity> : IEntityBaseService<TEntity> where TEntity : BaseEntity
     {
         protected EntityBaseService(IUnitOfWork unitOfWork, IBaseRepository<TEntity> repository)
         {

@@ -11,8 +11,21 @@ namespace UniversityManagement.Repositories.Mappings
     {
         public PocoMapping()
         {
-            CreateMap<AccessToken, AccessTokenViewModel>();
-            CreateMap<AccessTokenViewModel, AccessToken>();
+            //CreateMap<BaseEntity, BaseViewModel>(MemberList.Destination)
+            //    .IncludeAllDerived();
+
+            CreateMap<BaseViewModel, BaseEntity>()
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .Include<AccessTokenViewModel, AccessToken>()
+                .ReverseMap();
+                
+                //.IncludeAllDerived();
+
+            //CreateMap<AccessToken, AccessTokenViewModel>();
+            CreateMap<AccessTokenViewModel, AccessToken>()
+                .ReverseMap();
         }
     }
 }

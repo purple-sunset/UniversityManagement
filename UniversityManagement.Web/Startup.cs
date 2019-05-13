@@ -36,6 +36,7 @@ namespace UniversityManagement.Web
             });
 
             // Configure AutoMapper
+            Mapper.Initialize(cfg => cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies()));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // Configure DI

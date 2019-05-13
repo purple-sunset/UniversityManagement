@@ -12,8 +12,12 @@ namespace UniversityManagement.Authentication.Mappings
     {
         public IdentityModelMapping()
         {
-            CreateMap<PersistedGrant, AccessTokenViewModel>();
-            CreateMap<AccessTokenViewModel, PersistedGrant>();
+            CreateMap<PersistedGrant, AccessTokenViewModel>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreationTime))
+                .ReverseMap();
+            //CreateMap<AccessTokenViewModel, PersistedGrant>()
+            //    .ForMember(dest => dest.CreationTime, opt => opt.MapFrom(src => src.CreatedAt))
+            //    .ReverseMap();
         }
     }
 }

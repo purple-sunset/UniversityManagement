@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 using UniversityManagement.Authentication.Mappings;
 using UniversityManagement.Authentication.Models;
 using UniversityManagement.Authentication.Stores;
@@ -39,6 +40,7 @@ namespace UniversityManagement.Authentication
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // Configure AutoMapper
+            Mapper.Initialize(cfg => cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies()));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // Configure DI

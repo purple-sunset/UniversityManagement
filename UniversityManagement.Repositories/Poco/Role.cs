@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UniversityManagement.Repositories.Poco
 {
-    public class Role
+    public class Role:BaseEntity
     {
         [Required]
         [MaxLength(50)]

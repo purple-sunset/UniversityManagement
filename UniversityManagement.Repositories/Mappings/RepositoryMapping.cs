@@ -12,6 +12,7 @@ namespace UniversityManagement.Repositories.Mappings
     {
         public static void InitMap(IServiceCollection services)
         {
+            services.AddSingleton(typeof(DbContextOptions<>), typeof(DbContextOptions<>));
             services.AddSingleton<DbContext, WebContext>();
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
             services.AddSingleton(typeof(IBaseRepository<>), typeof(BaseRepository<>));

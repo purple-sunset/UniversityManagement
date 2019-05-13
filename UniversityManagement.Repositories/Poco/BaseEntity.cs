@@ -6,7 +6,7 @@ using System.Text;
 
 namespace UniversityManagement.Repositories.Poco
 {
-    [NotMapped]
+    //[NotMapped]
     public class BaseEntity
     {
         [Key]
