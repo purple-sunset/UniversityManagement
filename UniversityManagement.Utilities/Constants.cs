@@ -4,7 +4,9 @@ using System.Text;
 
 namespace UniversityManagement.Utilities
 {
-    public class Constants
+    public static class Constants
     {
+        public readonly static int DefaultPage = 1;
+        public readonly static int DefaultPageSize = 10;
     }
 }

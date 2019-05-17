@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using UniversityManagement.Repositories.Implements;
 using UniversityManagement.Repositories.Poco;
+using UniversityManagement.Utilities;
 
 namespace UniversityManagement.Services.Implements
 {
     public interface IEntityBaseService<TEntity> where TEntity : BaseEntity
     {
-        IQueryable<TEntity> GetAllEntity(Func<TEntity, bool> preCondition = null, int? page = null, int? pageSize = null);
+        IQueryable<TEntity> GetAllEntity(Func<TEntity, bool> preCondition = null, List<SortParameter<TEntity>> sorting = null, PagingParameter paging = null);
         TEntity GetEntityById(int id);
         Task<TEntity> GetEntityByIdAsync(int id);
         TEntity GetEntityBy(Func<TEntity, bool> preCondition = null);
@@ -55,18 +56,22 @@ namespace UniversityManagement.Services.Implements
         protected IUnitOfWork UnitOfWork { get; }
         protected IBaseRepository<TEntity> Repository { get; }
 
-        public IQueryable<TEntity> GetAllEntity(Func<TEntity, bool> preCondition = null, int? page = null, int? pageSize = null)
+        public IQueryable<TEntity> GetAllEntity(Func<TEntity, bool> preCondition = null, List<SortParameter<TEntity>> sorting = null, PagingParameter paging = null)
         {
             try
             {
-                var listEntity = Repository.Table;
+                var listEntity = Repository.TableNoTracking;
                 if(preCondition != null)
                 {
                     listEntity = listEntity.Where(preCondition).AsQueryable();
                 }
-                if(page != null && page.Value > 0 && pageSize != null && pageSize.Value > 0)
+                if(sorting != null)
                 {
-                    listEntity = listEntity.Skip(pageSize.Value * (page.Value - 1)).Take(pageSize.Value);
+                    listEntity = listEntity.OrderBy(sorting);
+                }
+                if(paging != null)
+                {
+                    listEntity = listEntity.Skip(paging.PageSize * (paging.Page - 1)).Take(paging.PageSize);
                 }
                 return listEntity;
             }
@@ -107,11 +112,10 @@ namespace UniversityManagement.Services.Implements
         {
             try
             {
-                return GetAllEntity(preCondition).FirstOrDefault();
+                return GetAllEntity(preCondition).OrderByDescending(e=>e.Id).FirstOrDefault();
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

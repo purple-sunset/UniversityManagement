@@ -7,43 +7,44 @@ using System.Threading.Tasks;
 using UniversityManagement.Entities.ViewModels;
 using UniversityManagement.Repositories.Implements;
 using UniversityManagement.Repositories.Poco;
+using UniversityManagement.Utilities;
 
 namespace UniversityManagement.Services.Implements
 {
     public interface IBaseService<TEntity, TViewModel> : IEntityBaseService<TEntity> where TEntity : BaseEntity where TViewModel : BaseViewModel
     {
-        IQueryable<TViewModel> GetAll(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null, int? page = null, int? pageSize = null);
-        TViewModel GetById(int id);
-        Task<TViewModel> GetByIdAsync(int id);
+        IQueryable<TViewModel> GetAllModel(Func<TEntity, bool> preCondition = null, List<SortParameter<TEntity>> preSorting = null, Func<TViewModel, bool> postCondition = null, List<SortParameter<TViewModel>> postSorting = null, PagingParameter paging = null);
+        TViewModel GetModelById(int id);
+        Task<TViewModel> GetModelByIdAsync(int id);
         TViewModel GetModelBy(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null);
-        bool Add(TViewModel viewModel);
-        bool Add(IEnumerable<TViewModel> viewModels);
-        Task<bool> AddAsync(TViewModel viewModel);
-        Task<bool> AddAsync(IEnumerable<TViewModel> viewModels);
-        bool Update(TViewModel viewModel);
-        bool Update(IEnumerable<TViewModel> viewModels);
-        Task<bool> UpdateAsync(TViewModel viewModel);
-        Task<bool> UpdateAsync(IEnumerable<TViewModel> viewModels);
-        bool Delete(int id);
-        bool Delete(IEnumerable<int> ids);
-        bool Delete(TViewModel viewModel);
-        bool Delete(IEnumerable<TViewModel> viewModels);
-        bool DeleteBy(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null);
-        Task<bool> DeleteAsync(int id);
-        Task<bool> DeleteAsync(IEnumerable<int> ids);
-        Task<bool> DeleteAsync(TViewModel viewModel);
-        Task<bool> DeleteAsync(IEnumerable<TViewModel> viewModels);
-        Task<bool> DeleteByAsync(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null);
-        bool HardDelete(int id);
-        bool HardDelete(IEnumerable<int> ids);
-        bool HardDelete(TViewModel viewModel);
-        bool HardDelete(IEnumerable<TViewModel> viewModels);
-        bool HardDeleteBy(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null);
-        Task<bool> HardDeleteAsync(int id);
-        Task<bool> HardDeleteAsync(IEnumerable<int> ids);
-        Task<bool> HardDeleteAsync(TViewModel viewModel);
-        Task<bool> HardDeleteAsync(IEnumerable<TViewModel> viewModels);
-        Task<bool> HardDeleteByAsync(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null);
+        bool AddModel(TViewModel viewModel);
+        bool AddModel(IEnumerable<TViewModel> viewModels);
+        Task<bool> AddModelAsync(TViewModel viewModel);
+        Task<bool> AddModelAsync(IEnumerable<TViewModel> viewModels);
+        bool UpdateModel(TViewModel viewModel);
+        bool UpdateModel(IEnumerable<TViewModel> viewModels);
+        Task<bool> UpdateModelAsync(TViewModel viewModel);
+        Task<bool> UpdateModelAsync(IEnumerable<TViewModel> viewModels);
+        bool DeleteModel(int id);
+        bool DeleteModel(IEnumerable<int> ids);
+        bool DeleteModel(TViewModel viewModel);
+        bool DeleteModel(IEnumerable<TViewModel> viewModels);
+        bool DeleteModelBy(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null);
+        Task<bool> DeleteModelAsync(int id);
+        Task<bool> DeleteModelAsync(IEnumerable<int> ids);
+        Task<bool> DeleteModelAsync(TViewModel viewModel);
+        Task<bool> DeleteModelAsync(IEnumerable<TViewModel> viewModels);
+        Task<bool> DeleteModelByAsync(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null);
+        bool HardDeleteModel(int id);
+        bool HardDeleteModel(IEnumerable<int> ids);
+        bool HardDeleteModel(TViewModel viewModel);
+        bool HardDeleteModel(IEnumerable<TViewModel> viewModels);
+        bool HardDeleteByModel(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null);
+        Task<bool> HardDeleteModelAsync(int id);
+        Task<bool> HardDeleteModelAsync(IEnumerable<int> ids);
+        Task<bool> HardDeleteModelAsync(TViewModel viewModel);
+        Task<bool> HardDeleteModelAsync(IEnumerable<TViewModel> viewModels);
+        Task<bool> HardDeleteModelByAsync(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null);
     }
     public class BaseService<TEntity, TViewModel> : EntityBaseService<TEntity>, IBaseService<TEntity, TViewModel>  where TEntity : BaseEntity where TViewModel : BaseViewModel
     {
@@ -51,14 +52,18 @@ namespace UniversityManagement.Services.Implements
         {
 
         }
-        public IQueryable<TViewModel> GetAll(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null, int? page = null, int? pageSize = null)
+        public IQueryable<TViewModel> GetAllModel(Func<TEntity, bool> preCondition = null, List<SortParameter<TEntity>> preSorting = null, Func<TViewModel, bool> postCondition = null, List<SortParameter<TViewModel>> postSorting = null, PagingParameter paging = null)
         {
             try
             {
-                var listModels = GetAllEntity(preCondition, page, pageSize).ProjectTo<TViewModel>();
+                var listModels = GetAllEntity(preCondition, preSorting, paging).ProjectTo<TViewModel>();
                 if(postCondition != null)
                 {
                     listModels = listModels.Where(postCondition).AsQueryable();
+                }
+                if(postSorting != null)
+                {
+                    listModels = listModels.OrderBy(postSorting);
                 }
                 return listModels;
             }
@@ -69,7 +74,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public TViewModel GetById(int id)
+        public TViewModel GetModelById(int id)
         {
             try
             {
@@ -83,7 +88,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<TViewModel> GetByIdAsync(int id)
+        public async Task<TViewModel> GetModelByIdAsync(int id)
         {
             try
             {
@@ -101,7 +106,7 @@ namespace UniversityManagement.Services.Implements
         {
             try
             {
-                IQueryable<TEntity> entities = GetAllEntity(preCondition);
+                IQueryable<TEntity> entities = GetAllEntity(preCondition).OrderByDescending(x=>x.Id);
 
                 if(postCondition != null)
                 {
@@ -122,7 +127,7 @@ namespace UniversityManagement.Services.Implements
         }
 
 
-        public bool Add(TViewModel viewModel)
+        public bool AddModel(TViewModel viewModel)
         {
             try
             {
@@ -136,7 +141,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public bool Add(IEnumerable<TViewModel> viewModels)
+        public bool AddModel(IEnumerable<TViewModel> viewModels)
         {
             try
             {
@@ -150,7 +155,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> AddAsync(TViewModel viewModel)
+        public async Task<bool> AddModelAsync(TViewModel viewModel)
         {
             try
             {
@@ -164,7 +169,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> AddAsync(IEnumerable<TViewModel> viewModels)
+        public async Task<bool> AddModelAsync(IEnumerable<TViewModel> viewModels)
         {
             try
             {
@@ -178,7 +183,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public bool Update(TViewModel viewModel)
+        public bool UpdateModel(TViewModel viewModel)
         {
             try
             {
@@ -193,7 +198,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public bool Update(IEnumerable<TViewModel> viewModels)
+        public bool UpdateModel(IEnumerable<TViewModel> viewModels)
         {
             try
             {
@@ -214,7 +219,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> UpdateAsync(TViewModel viewModel)
+        public async Task<bool> UpdateModelAsync(TViewModel viewModel)
         {
             try
             {
@@ -229,7 +234,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> UpdateAsync(IEnumerable<TViewModel> viewModels)
+        public async Task<bool> UpdateModelAsync(IEnumerable<TViewModel> viewModels)
         {
             try
             {
@@ -250,7 +255,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public bool Delete(int id)
+        public bool DeleteModel(int id)
         {
             try
             {
@@ -263,7 +268,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public bool Delete(IEnumerable<int> ids)
+        public bool DeleteModel(IEnumerable<int> ids)
         {
             try
             {
@@ -276,7 +281,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public bool Delete(TViewModel viewModel)
+        public bool DeleteModel(TViewModel viewModel)
         {
             try
             {
@@ -290,7 +295,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public bool Delete(IEnumerable<TViewModel> viewModels)
+        public bool DeleteModel(IEnumerable<TViewModel> viewModels)
         {
             try
             {
@@ -306,7 +311,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public bool DeleteBy(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null)
+        public bool DeleteModelBy(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null)
         {
             try
             {
@@ -329,7 +334,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteModelAsync(int id)
         {
             try
             {
@@ -342,7 +347,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> DeleteAsync(IEnumerable<int> ids)
+        public async Task<bool> DeleteModelAsync(IEnumerable<int> ids)
         {
             try
             {
@@ -355,7 +360,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> DeleteAsync(TViewModel viewModel)
+        public async Task<bool> DeleteModelAsync(TViewModel viewModel)
         {
             try
             {
@@ -369,7 +374,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> DeleteAsync(IEnumerable<TViewModel> viewModels)
+        public async Task<bool> DeleteModelAsync(IEnumerable<TViewModel> viewModels)
         {
             try
             {
@@ -385,7 +390,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> DeleteByAsync(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null)
+        public async Task<bool> DeleteModelByAsync(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null)
         {
             try
             {
@@ -409,7 +414,7 @@ namespace UniversityManagement.Services.Implements
         }
 
 
-        public bool HardDelete(int id)
+        public bool HardDeleteModel(int id)
         {
             try
             {
@@ -422,7 +427,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public bool HardDelete(IEnumerable<int> ids)
+        public bool HardDeleteModel(IEnumerable<int> ids)
         {
             try
             {
@@ -436,7 +441,7 @@ namespace UniversityManagement.Services.Implements
         }
 
 
-        public bool HardDelete(TViewModel viewModel)
+        public bool HardDeleteModel(TViewModel viewModel)
         {
             try
             {
@@ -450,7 +455,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public bool HardDelete(IEnumerable<TViewModel> viewModels)
+        public bool HardDeleteModel(IEnumerable<TViewModel> viewModels)
         {
             try
             {
@@ -466,7 +471,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public bool HardDeleteBy(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null)
+        public bool HardDeleteByModel(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null)
         {
             try
             {
@@ -489,7 +494,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> HardDeleteAsync(int id)
+        public async Task<bool> HardDeleteModelAsync(int id)
         {
             try
             {
@@ -502,7 +507,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> HardDeleteAsync(IEnumerable<int> ids)
+        public async Task<bool> HardDeleteModelAsync(IEnumerable<int> ids)
         {
             try
             {
@@ -516,7 +521,7 @@ namespace UniversityManagement.Services.Implements
         }
 
 
-        public async Task<bool> HardDeleteAsync(TViewModel viewModel)
+        public async Task<bool> HardDeleteModelAsync(TViewModel viewModel)
         {
             try
             {
@@ -530,7 +535,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> HardDeleteAsync(IEnumerable<TViewModel> viewModels)
+        public async Task<bool> HardDeleteModelAsync(IEnumerable<TViewModel> viewModels)
         {
             try
             {
@@ -546,7 +551,7 @@ namespace UniversityManagement.Services.Implements
             }
         }
 
-        public async Task<bool> HardDeleteByAsync(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null)
+        public async Task<bool> HardDeleteModelByAsync(Func<TEntity, bool> preCondition = null, Func<TViewModel, bool> postCondition = null)
         {
             try
             {

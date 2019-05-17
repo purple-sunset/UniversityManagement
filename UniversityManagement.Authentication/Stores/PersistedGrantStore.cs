@@ -20,7 +20,7 @@ namespace UniversityManagement.Authentication.Stores
         }
         public async Task<IEnumerable<PersistedGrant>> GetAllAsync(string subjectId)
         {
-            return AccessTokenService.GetAll(x => x.SubjectId == subjectId).ProjectTo<PersistedGrant>();
+            return AccessTokenService.GetAllModel(x => x.SubjectId == subjectId).ProjectTo<PersistedGrant>();
         }
 
         public async Task<PersistedGrant> GetAsync(string key)
@@ -31,23 +31,23 @@ namespace UniversityManagement.Authentication.Stores
 
         public async Task RemoveAllAsync(string subjectId, string clientId)
         {
-            await AccessTokenService.HardDeleteByAsync(e => e.SubjectId == subjectId && e.ClientId == clientId);
+            await AccessTokenService.HardDeleteModelByAsync(e => e.SubjectId == subjectId && e.ClientId == clientId);
         }
 
         public async Task RemoveAllAsync(string subjectId, string clientId, string type)
         {
-            await AccessTokenService.HardDeleteByAsync(e => e.SubjectId == subjectId && e.ClientId == clientId && e.Type == type );
+            await AccessTokenService.HardDeleteModelByAsync(e => e.SubjectId == subjectId && e.ClientId == clientId && e.Type == type );
         }
 
         public async Task RemoveAsync(string key)
         {
-            await AccessTokenService.HardDeleteByAsync(e => e.Key == key);
+            await AccessTokenService.HardDeleteModelByAsync(e => e.Key == key);
         }
 
         public async Task StoreAsync(PersistedGrant grant)
         {
             var accessToken = Mapper.Map<AccessTokenViewModel>(grant);
-            await AccessTokenService.AddAsync(accessToken);
+            await AccessTokenService.AddModelAsync(accessToken);
         }
     }
 }

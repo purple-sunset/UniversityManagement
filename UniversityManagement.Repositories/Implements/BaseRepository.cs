@@ -207,7 +207,7 @@ namespace UniversityManagement.Repositories.Implements
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
-                //Attach(entity);
+                Attach(entity);
                 entity.UpdatedAt = DateTime.Now;
                 _context.Entry(entity).State = EntityState.Modified;
             }
@@ -230,7 +230,7 @@ namespace UniversityManagement.Repositories.Implements
 
                 foreach (TEntity entity in entities)
                 {
-                    //Attach(entity);
+                    Attach(entity);
                     entity.UpdatedAt = DateTime.Now;
                     _context.Entry(entity).State = EntityState.Modified;
                 }
@@ -271,13 +271,12 @@ namespace UniversityManagement.Repositories.Implements
         {
             try
             {
-                if (ids == null)
+                if (ids == null || !ids.Any())
                     throw new ArgumentNullException(nameof(ids));
 
                 IQueryable<TEntity> entities = Table.Where(e => ids.Contains(e.Id));
                 foreach (TEntity entity in entities)
                 {
-                    //Attach(entity);
                     entity.UpdatedAt = DateTime.Now;
                     entity.IsDeleted = true;
                     _context.Entry(entity).State = EntityState.Modified;
@@ -301,7 +300,7 @@ namespace UniversityManagement.Repositories.Implements
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
-                //Attach(entity);
+                Attach(entity);
                 entity.UpdatedAt = DateTime.Now;
                 entity.IsDeleted = true;
                 _context.Entry(entity).State = EntityState.Modified;
@@ -320,12 +319,12 @@ namespace UniversityManagement.Repositories.Implements
         {
             try
             {
-                if (entities == null)
+                if (entities == null || !entities.Any())
                     throw new ArgumentNullException(nameof(entities));
 
                 foreach (TEntity entity in entities)
                 {
-                    //Attach(entity);
+                    Attach(entity);
                     entity.UpdatedAt = DateTime.Now;
                     entity.IsDeleted = true;
                     _context.Entry(entity).State = EntityState.Modified;
@@ -365,7 +364,7 @@ namespace UniversityManagement.Repositories.Implements
         {
             try
             {
-                if (ids == null)
+                if (ids == null || !ids.Any())
                     throw new ArgumentNullException(nameof(ids));
 
                 IQueryable<TEntity> entities = Table.Where(e=>ids.Contains(e.Id));
@@ -392,6 +391,7 @@ namespace UniversityManagement.Repositories.Implements
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
+                Attach(entity);
                 _context.Entry(entity).State = EntityState.Deleted;
             }
             catch (Exception)
@@ -408,11 +408,12 @@ namespace UniversityManagement.Repositories.Implements
         {
             try
             {
-                if (entities == null)
+                if (entities == null || !entities.Any())
                     throw new ArgumentNullException(nameof(entities));
 
                 foreach (TEntity entity in entities)
                 {
+                    Attach(entity);
                     _context.Entry(entity).State = EntityState.Deleted;
                 }
             }
@@ -449,7 +450,7 @@ namespace UniversityManagement.Repositories.Implements
         {
             try
             {
-                if (entities == null)
+                if (entities == null || !entities.Any())
                     throw new ArgumentNullException(nameof(entities));
 
                 Entities.AttachRange(entities);
