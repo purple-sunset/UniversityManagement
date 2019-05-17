@@ -112,7 +112,12 @@ namespace UniversityManagement.Services.Implements
         {
             try
             {
-                return GetAllEntity(preCondition).OrderByDescending(e=>e.Id).FirstOrDefault();
+                var listEntity = Repository.Table;
+                if (preCondition != null)
+                {
+                    listEntity = listEntity.Where(preCondition).AsQueryable();
+                }
+                return listEntity.OrderByDescending(e=>e.Id).FirstOrDefault();
             }
             catch (Exception)
             {

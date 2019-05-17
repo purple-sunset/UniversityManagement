@@ -106,9 +106,14 @@ namespace UniversityManagement.Services.Implements
         {
             try
             {
-                IQueryable<TEntity> entities = GetAllEntity(preCondition).OrderByDescending(x=>x.Id);
+                var entities = Repository.Table;
+                if (preCondition != null)
+                {
+                    entities = entities.Where(preCondition).AsQueryable();
+                }
+                entities = entities.OrderByDescending(x => x.Id);
 
-                if(postCondition != null)
+                if (postCondition != null)
                 {
                     IQueryable<TViewModel> listModel = entities.ProjectTo<TViewModel>();
                     return listModel.FirstOrDefault(postCondition);
