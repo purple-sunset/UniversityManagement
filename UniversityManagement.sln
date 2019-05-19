@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityManagement.Reposi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityManagement.Services", "UniversityManagement.Services\UniversityManagement.Services.csproj", "{BCF1EE38-881F-44B2-935B-59E0A6B05372}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversityManagement.Authentication", "UniversityManagement.Authentication\UniversityManagement.Authentication.csproj", "{67DD242F-E1EF-4D3E-9FDD-FFF3BF5C7E75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityManagement.Authentication", "UniversityManagement.Authentication\UniversityManagement.Authentication.csproj", "{67DD242F-E1EF-4D3E-9FDD-FFF3BF5C7E75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
